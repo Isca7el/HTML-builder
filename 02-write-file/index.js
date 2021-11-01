@@ -21,5 +21,5 @@ rl.on('line', line => {
   writeableStream.write(`${line} \n`);
 });
 
-process.on('exit', () => console.log('\bSee you later'));
+process.on('exit', () => console.log('\b See you later'));
 process.on('SIGINT', () => exit());
