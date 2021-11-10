@@ -19,7 +19,6 @@ fs.readFile(path.join(__dirname, 'template.html'), 'utf8', (err, data) => {
           fs.writeFile(path.join(__dirname, 'project-dist', 'index.html'), result, (err) => {
             if (err) throw err;
           });
-
         });
       }
     });
@@ -31,24 +30,25 @@ fs.mkdir(path.join(__dirname, 'project-dist', 'assets'), { recursive: true }, (e
   if (err) throw err;
 });
 
-fs.readdir(path.join(__dirname, 'assets'), {withFileTypes: true}, (err, file) => {
-  if (err) throw err;
-  file.forEach(item =>{
-    fs.mkdir(path.join(__dirname, 'project-dist', 'assets', item.name), { recursive: true }, (err) => {
-      if (err) throw err;  
-      fs.readdir(path.join(__dirname, 'project-dist', 'assets', item.name), {withFileTypes: true}, (err, file) => {
-        file.forEach(item => {
-          fs.unlink(path.join(__dirname, 'project-dist', 'assets', item.name, file.name), (err) => {
-            if (err) throw err;
-          }); 
-        });
-      });
+fs.readdir(path.join(__dirname, 'assets'), { withFileTypes: true }, (err, dirs) => {
+  dirs.forEach(dir => {
 
-      fs.readdir(path.join(__dirname, 'project-dist', 'assets', item.name), {withFileTypes: true}, (err, file) => {
-        file.forEach(item => {
-          fs.copyfile(path.join(__dirname, 'assets', item.name, file.name), path.join(__dirname, 'project-dist', 'assets', item.name), (err) => {
+    fs.mkdir(path.join(__dirname, 'project-dist', 'assets', dir.name), { recursive: true }, (err) => {
+      if (err) throw err;
+
+      fs.readdir(path.join(__dirname, 'project-dist', 'assets', dir.name), { withFileTypes: true }, (err, files) => {
+        files.forEach(file => {
+          fs.unlink(path.join(__dirname, 'project-dist', 'assets', dir.name, file.name), (err) => {
             if (err) throw err;
-          }); 
+          });
+        });
+
+        fs.readdir(path.join(__dirname, 'assets', dir.name), { withFileTypes: true }, (err, files) => {
+          files.forEach(file => {
+            fs.copyFile(path.join(__dirname, 'assets', dir.name, file.name), path.join(__dirname, 'project-dist', 'assets', dir.name, file.name), (err) => {
+              if (err) throw err;
+            });
+          });
         });
       });
     });
